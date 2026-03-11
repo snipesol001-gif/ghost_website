@@ -120,7 +120,7 @@
         /* Tailwind script will be initialized in body */
     </style>
 </head>
-<body class="bg-[#05070f] text-white overflow-x-hidden">
+<body class="bg-[#05070f] text-white overflow-x-hidden min-h-[100dvh]">
     <!-- BACKGROUND CANVAS -->
     <canvas id="bg-canvas" class="fixed inset-0 pointer-events-none z-[-1]"></canvas>
 
@@ -217,7 +217,7 @@
     </nav>
 
     <!-- HERO -->
-    <section id="home" class="min-h-screen flex items-center relative">
+    <section id="home" class="min-h-[100dvh] flex items-center relative">
         <div class="max-w-screen-2xl mx-auto px-6 grid md:grid-cols-12 gap-12 items-center pt-20">
             <!-- Left content -->
             <div class="md:col-span-7 space-y-10">
@@ -735,9 +735,26 @@
             let isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
             
             function resizeCanvas() {
-                canvas.width = window.innerWidth;
-                canvas.height = window.innerHeight;
-            }
+    const dpr = window.devicePixelRatio || 1;   // ← This fixes the gap on phones
+    canvas.width = window.innerWidth * dpr;
+    canvas.height = window.innerHeight * dpr;
+    canvas.style.width = window.innerWidth + 'px';
+    canvas.style.height = window.innerHeight + 'px';
+    ctx.scale(dpr, dpr);
+}
+
+            // Extra mobile fix: handle address bar + orientation change
+window.addEventListener('orientationchange', () => {
+    setTimeout(() => {
+        resizeCanvas();
+        createParticles(window.innerWidth < 768 ? 85 : 165);
+    }, 150);
+});
+
+setTimeout(() => {
+    resizeCanvas();
+    createParticles(window.innerWidth < 768 ? 85 : 165);
+}, 400);
             
             class Particle {
                 constructor() {
