@@ -32,7 +32,6 @@
             font-family: 'Space Grotesk', sans-serif;
         }
 
-        /* Glassmorphism */
         .glass {
             background: rgba(15, 23, 42, 0.65);
             backdrop-filter: blur(20px);
@@ -40,7 +39,6 @@
             border: 1px solid rgba(255,255,255,0.1);
         }
 
-        /* Neon glows */
         .neon-cyan {
             text-shadow: 
                 0 0 10px var(--cyan-glow),
@@ -48,7 +46,7 @@
                 0 0 40px var(--cyan-glow);
         }
 
-        /* CRITICAL: Canvas MUST be 100% edge-to-edge on EVERY device */
+        /* CRITICAL: Canvas 100% edge-to-edge on EVERY device (350dp phones → tablets → PC) */
         #bg-canvas {
             position: fixed;
             top: 0;
@@ -116,10 +114,20 @@
             line-height: 1;
             color: #00f3ff;
         }
+
+        /* MOBILE OPTIMIZATIONS FOR SKILLS SECTION */
+        .skill-bar span {
+            font-size: 0.875rem; /* smaller on mobile */
+        }
+        @media (min-width: 768px) {
+            .skill-bar span {
+                font-size: 1rem;
+            }
+        }
     </style>
 </head>
 <body class="bg-[#05070f] text-white overflow-x-hidden">
-    <!-- BACKGROUND CANVAS - 100% edge-to-edge on ANY device (350dp phones → tablets → PC) -->
+    <!-- BACKGROUND CANVAS -->
     <canvas id="bg-canvas"></canvas>
 
     <!-- SCROLL PROGRESS -->
@@ -147,7 +155,7 @@
         </div>
     </div>
 
-    <!-- NAVBAR (unchanged) -->
+    <!-- NAVBAR -->
     <nav class="sticky top-0 z-50 glass border-b border-white/10">
         <div class="max-w-screen-2xl mx-auto px-6 py-5 flex items-center justify-between">
             <a href="#" onclick="document.getElementById('home').scrollIntoView({behavior:'smooth'})" class="flex items-center gap-3 group">
@@ -180,7 +188,7 @@
         </div>
     </nav>
 
-    <!-- HERO - 100dvh for perfect mobile fit -->
+    <!-- HERO -->
     <section id="home" class="min-h-[100dvh] flex items-center relative">
         <div class="max-w-screen-2xl mx-auto px-6 grid md:grid-cols-12 gap-12 items-center pt-20">
             <div class="md:col-span-7 space-y-10">
@@ -210,7 +218,7 @@
         </div>
     </section>
 
-    <!-- ABOUT (unchanged) -->
+    <!-- ABOUT -->
     <section id="about" class="py-32 bg-black/30">
         <div class="max-w-screen-2xl mx-auto px-6">
             <div class="grid md:grid-cols-12 gap-16 items-center">
@@ -234,7 +242,7 @@
         </div>
     </section>
 
-    <!-- SERVICES (unchanged) -->
+    <!-- SERVICES -->
     <section id="services" class="py-32">
         <div class="max-w-screen-2xl mx-auto px-6">
             <div class="text-center mb-16">
@@ -250,7 +258,7 @@
         </div>
     </section>
 
-    <!-- PORTFOLIO (unchanged) -->
+    <!-- PORTFOLIO -->
     <section id="portfolio" class="py-32 bg-black/40">
         <div class="max-w-screen-2xl mx-auto px-6">
             <div class="flex justify-between items-end mb-16">
@@ -276,23 +284,68 @@
         </div>
     </section>
 
-    <!-- SKILLS (unchanged) -->
+    <!-- SKILLS - NOW PERFECTLY RESPONSIVE ON 350dp PHONES -->
     <section id="skills" class="py-32 bg-black/30">
         <div class="max-w-screen-2xl mx-auto px-6">
             <div class="grid md:grid-cols-12 gap-16">
-                <div class="md:col-span-5"><span class="text-orange-400 uppercase tracking-widest text-sm">CHAPTER 04</span><h2 class="title-font text-6xl font-semibold mt-4">Superpowers</h2></div>
-                <div class="md:col-span-7 space-y-12">
-                    <div class="skill-bar"><div class="flex justify-between mb-3"><span class="font-medium">Website Development</span><span class="text-cyan-400 font-mono">95%</span></div><div class="h-2 bg-white/10 rounded-full overflow-hidden"><div data-width="95" class="skill-progress h-full bg-gradient-to-r from-cyan-400 to-cyan-300 w-0"></div></div></div>
-                    <div class="skill-bar"><div class="flex justify-between mb-3"><span class="font-medium">Web3 Collab Management</span><span class="text-cyan-400 font-mono">92%</span></div><div class="h-2 bg-white/10 rounded-full overflow-hidden"><div data-width="92" class="skill-progress h-full bg-gradient-to-r from-cyan-400 to-cyan-300 w-0"></div></div></div>
-                    <div class="skill-bar"><div class="flex justify-between mb-3"><span class="font-medium">Graphic Design</span><span class="text-cyan-400 font-mono">88%</span></div><div class="h-2 bg-white/10 rounded-full overflow-hidden"><div data-width="88" class="skill-progress h-full bg-gradient-to-r from-cyan-400 to-cyan-300 w-0"></div></div></div>
-                    <div class="skill-bar"><div class="flex justify-between mb-3"><span class="font-medium">Community Moderation</span><span class="text-cyan-400 font-mono">90%</span></div><div class="h-2 bg-white/10 rounded-full overflow-hidden"><div data-width="90" class="skill-progress h-full bg-gradient-to-r from-cyan-400 to-cyan-300 w-0"></div></div></div>
-                    <div class="skill-bar"><div class="flex justify-between mb-3"><span class="font-medium">UI/UX for Web3</span><span class="text-cyan-400 font-mono">85%</span></div><div class="h-2 bg-white/10 rounded-full overflow-hidden"><div data-width="85" class="skill-progress h-full bg-gradient-to-r from-cyan-400 to-cyan-300 w-0"></div></div></div>
+                <!-- Left column - smaller text on mobile -->
+                <div class="md:col-span-5">
+                    <span class="text-orange-400 uppercase tracking-widest text-xs md:text-sm">CHAPTER 04</span>
+                    <h2 class="title-font text-5xl md:text-6xl font-semibold mt-4">Superpowers</h2>
+                </div>
+                <!-- Right column - compact skill bars on mobile -->
+                <div class="md:col-span-7 space-y-10">
+                    <div class="skill-bar">
+                        <div class="flex justify-between mb-3 text-sm">
+                            <span class="font-medium">Website Development</span>
+                            <span class="text-cyan-400 font-mono">95%</span>
+                        </div>
+                        <div class="h-2 bg-white/10 rounded-full overflow-hidden">
+                            <div data-width="95" class="skill-progress h-full bg-gradient-to-r from-cyan-400 to-cyan-300 w-0"></div>
+                        </div>
+                    </div>
+                    <div class="skill-bar">
+                        <div class="flex justify-between mb-3 text-sm">
+                            <span class="font-medium">Web3 Collab Management</span>
+                            <span class="text-cyan-400 font-mono">92%</span>
+                        </div>
+                        <div class="h-2 bg-white/10 rounded-full overflow-hidden">
+                            <div data-width="92" class="skill-progress h-full bg-gradient-to-r from-cyan-400 to-cyan-300 w-0"></div>
+                        </div>
+                    </div>
+                    <div class="skill-bar">
+                        <div class="flex justify-between mb-3 text-sm">
+                            <span class="font-medium">Graphic Design</span>
+                            <span class="text-cyan-400 font-mono">88%</span>
+                        </div>
+                        <div class="h-2 bg-white/10 rounded-full overflow-hidden">
+                            <div data-width="88" class="skill-progress h-full bg-gradient-to-r from-cyan-400 to-cyan-300 w-0"></div>
+                        </div>
+                    </div>
+                    <div class="skill-bar">
+                        <div class="flex justify-between mb-3 text-sm">
+                            <span class="font-medium">Community Moderation</span>
+                            <span class="text-cyan-400 font-mono">90%</span>
+                        </div>
+                        <div class="h-2 bg-white/10 rounded-full overflow-hidden">
+                            <div data-width="90" class="skill-progress h-full bg-gradient-to-r from-cyan-400 to-cyan-300 w-0"></div>
+                        </div>
+                    </div>
+                    <div class="skill-bar">
+                        <div class="flex justify-between mb-3 text-sm">
+                            <span class="font-medium">UI/UX for Web3</span>
+                            <span class="text-cyan-400 font-mono">85%</span>
+                        </div>
+                        <div class="h-2 bg-white/10 rounded-full overflow-hidden">
+                            <div data-width="85" class="skill-progress h-full bg-gradient-to-r from-cyan-400 to-cyan-300 w-0"></div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- TESTIMONIALS (your exact custom versions) -->
+    <!-- TESTIMONIALS -->
     <section id="testimonials" class="py-32">
         <div class="max-w-screen-2xl mx-auto px-6">
             <div class="text-center mb-16">
@@ -315,8 +368,8 @@
         </div>
     </section>
 
-    <!-- FOOTER (unchanged) -->
-    <footer class="glass py-20 border-t border-white/10">
+    <!-- FOOTER - COMPACT ON MOBILE (no extra space) -->
+    <footer class="glass py-12 md:py-20 border-t border-white/10">
         <div class="max-w-screen-2xl mx-auto px-6">
             <div class="flex flex-col md:flex-row justify-between items-center gap-12">
                 <div class="flex items-center gap-4">
@@ -335,7 +388,6 @@
     </footer>
 
     <script>
-        // Tailwind init
         function initTailwind() { document.documentElement.style.setProperty('--tw-ring-color', '#00f3ff'); }
 
         function smoothScrollTo(sectionId) {
@@ -348,7 +400,6 @@
             document.getElementById('mobile-menu').classList.toggle('hidden');
         }
 
-        // === BACKGROUND CANVAS - BULLETPROOF FULL-SCREEN FOR EVERY DEVICE (350dp → PC) ===
         function initBackground() {
             const canvas = document.getElementById('bg-canvas');
             const ctx = canvas.getContext('2d');
@@ -437,15 +488,12 @@
                 requestAnimationFrame(animate);
             }
 
-            // === UNIVERSAL RESIZE HANDLERS (works on 350dp phones, tablets, PC, any orientation) ===
             window.addEventListener('resize', () => { resizeCanvas(); createParticles(window.innerWidth < 768 ? 85 : 165); });
             window.addEventListener('orientationchange', () => {
                 setTimeout(() => { resizeCanvas(); createParticles(window.innerWidth < 768 ? 85 : 165); }, 200);
             });
-
             window.addEventListener('mousemove', e => { mouse.x = e.clientX; mouse.y = e.clientY; });
 
-            // Initial + safety timeouts (critical for mobile address bar / DPR)
             resizeCanvas();
             createParticles(window.innerWidth < 768 ? 85 : 165);
             animate();
@@ -455,7 +503,6 @@
             setTimeout(() => { resizeCanvas(); createParticles(window.innerWidth < 768 ? 85 : 165); }, 1200);
         }
 
-        // Typewriter, Preloader, Scroll Progress, Skills, Card Tilt (unchanged - kept exactly as your version)
         function typewriterEffect() {
             const roles = ["Web3 Collab Manager","Graphic Designer","Website Developer","Community Moderator"];
             let index = 0, charIndex = 0, isDeleting = false;
