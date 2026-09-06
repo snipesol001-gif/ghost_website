@@ -1,619 +1,371 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link rel="icon" type="image/png" href="/images/favicon.png">
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>! Ghost — Web3 Portfolio</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Space+Grotesk:wght@500;600&amp;display=swap');
-        
-        :root {
-            --cyan-glow: #00f3ff;
-            --orange-accent: #ff9500;
-        }
-        
-        html, body {
-            height: 100%;
-            margin: 0;
-            padding: 0;
-            overflow-x: hidden;
-            background: #05070f;
-        }
-        
-        body {
-            font-family: 'Inter', system_ui, sans-serif;
-            min-height: 100dvh;
-            overflow-x: hidden;
-        }
-        
-        .title-font {
-            font-family: 'Space Grotesk', sans-serif;
-        }
-
-        .glass {
-            background: rgba(15, 23, 42, 0.65);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255,255,255,0.1);
-        }
-
-        .neon-cyan {
-            text-shadow: 
-                0 0 10px var(--cyan-glow),
-                0 0 20px var(--cyan-glow),
-                0 0 40px var(--cyan-glow);
-        }
-
-        /* CRITICAL: Canvas 100% edge-to-edge on EVERY device (350dp phones → tablets → PC) */
-        #bg-canvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw !important;
-            height: 100dvh !important;
-            z-index: -1;
-            pointer-events: none;
-        }
-
-        .preloader-ring {
-            width: 120px;
-            height: 120px;
-            border: 4px solid rgba(0, 243, 255, 0.15);
-            border-top-color: #00f3ff;
-            border-radius: 50%;
-            animation: spin 1.2s linear infinite;
-            box-shadow: 0 0 40px #00f3ff;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        .glow-text {
-            animation: glow-pulse 2s ease-in-out infinite;
-        }
-
-        @keyframes glow-pulse {
-            0%, 100% { text-shadow: 0 0 20px #00f3ff, 0 0 40px #00f3ff, 0 0 60px #00f3ff; }
-            50% { text-shadow: 0 0 30px #00f3ff, 0 0 60px #00f3ff, 0 0 90px #00f3ff; }
-        }
-
-        .hero-float {
-            animation: hero-float 6s ease-in-out infinite;
-        }
-
-        @keyframes hero-float {
-            0%, 100% { transform: translateY(0px) rotate(0deg); }
-            50% { transform: translateY(-35px) rotate(2deg); }
-        }
-
-        .portfolio-card {
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-        
-        #scroll-progress {
-            height: 3px;
-            background: linear-gradient(to right, #00f3ff, #ff9500);
-            z-index: 50;
-        }
-
-        .testimonial-card {
-            position: relative;
-        }
-        
-        .testimonial-card::before {
-            content: '“';
-            font-size: 180px;
-            position: absolute;
-            top: -40px;
-            left: 20px;
-            opacity: 0.08;
-            font-family: Georgia, serif;
-            line-height: 1;
-            color: #00f3ff;
-        }
-
-        /* MOBILE OPTIMIZATIONS FOR SKILLS SECTION */
-        .skill-bar span {
-            font-size: 0.875rem; /* smaller on mobile */
-        }
-        @media (min-width: 768px) {
-            .skill-bar span {
-                font-size: 1rem;
-            }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Ghost — Web3 Developer & Designer</title>
+  <link rel="icon" type="image/png" href="images/favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
 </head>
-<body class="bg-[#05070f] text-white overflow-x-hidden">
-    <!-- BACKGROUND CANVAS -->
-    <canvas id="bg-canvas"></canvas>
+<body>
 
-    <!-- SCROLL PROGRESS -->
-    <div id="scroll-progress" class="fixed top-0 left-0 w-0"></div>
-
-    <!-- CINEMATIC PRELOADER -->
-    <div id="preloader" class="fixed inset-0 bg-[#05070f] flex items-center justify-center z-[99999]">
-        <div class="relative flex flex-col items-center">
-            <div class="relative mb-8">
-                <div class="w-40 h-40 rounded-full glass flex items-center justify-center">
-                    <div class="preloader-ring absolute"></div>
-                    <div class="w-28 h-28 rounded-full bg-gradient-to-br from-cyan-400/20 to-transparent flex items-center justify-center relative">
-                        <div class="w-16 h-16 bg-cyan-400 rounded-full blur-2xl opacity-30"></div>
-                    </div>
-                </div>
-                <div class="absolute top-6 left-8 w-3 h-3 bg-cyan-400 rounded-full animate-ping" style="animation-delay: 0ms"></div>
-                <div class="absolute top-14 right-10 w-2 h-2 bg-orange-400 rounded-full animate-ping" style="animation-delay: 400ms"></div>
-                <div class="absolute bottom-10 left-14 w-4 h-4 bg-cyan-400 rounded-full animate-ping" style="animation-delay: 800ms"></div>
-            </div>
-            <h1 class="title-font text-7xl md:text-8xl font-semibold tracking-tighter neon-cyan glow-text text-center">! Ghost</h1>
-            <div class="mt-6 flex items-center gap-2 text-cyan-400/80 text-lg font-medium">
-                <span id="loading-dots">Initializing Portfolio</span>
-                <span class="animate-pulse">.</span><span class="animate-pulse" style="animation-delay: 300ms">.</span><span class="animate-pulse" style="animation-delay: 600ms">.</span>
-            </div>
-        </div>
+  <!-- ===================== PRELOADER ===================== -->
+  <div id="preloader">
+    <div class="preloader-mark">
+      <div class="preloader-ring"></div>
+      <div class="preloader-ring preloader-ring-2"></div>
+      <img src="images/hero-nft.png" alt="" class="preloader-skull">
     </div>
+    <p class="preloader-text">Loading Ghost<span class="dots"><span>.</span><span>.</span><span>.</span></span></p>
+  </div>
 
-    <!-- NAVBAR -->
-    <nav class="sticky top-0 z-50 glass border-b border-white/10">
-        <div class="max-w-screen-2xl mx-auto px-6 py-5 flex items-center justify-between">
-            <a href="#" onclick="document.getElementById('home').scrollIntoView({behavior:'smooth'})" class="flex items-center gap-3 group">
-                <div class="w-9 h-9 rounded-2xl bg-gradient-to-br from-cyan-400 to-orange-400 flex items-center justify-center text-xl font-bold title-font shadow-[0_0_25px_#00f3ff]">!</div>
-                <span class="title-font text-3xl font-semibold tracking-tighter group-hover:text-cyan-400">Ghost</span>
-            </a>
-            <div class="hidden md:flex items-center gap-10 text-sm font-medium">
-                <a href="#home" onclick="smoothScrollTo('home')" class="hover:text-cyan-400 nav-link">HOME</a>
-                <a href="#about" onclick="smoothScrollTo('about')" class="hover:text-cyan-400 nav-link">ABOUT</a>
-                <a href="#services" onclick="smoothScrollTo('services')" class="hover:text-cyan-400 nav-link">SERVICES</a>
-                <a href="#portfolio" onclick="smoothScrollTo('portfolio')" class="hover:text-cyan-400 nav-link">PORTFOLIO</a>
-                <a href="#skills" onclick="smoothScrollTo('skills')" class="hover:text-cyan-400 nav-link">SKILLS</a>
-                <a href="#testimonials" onclick="smoothScrollTo('testimonials')" class="hover:text-cyan-400 nav-link">TESTIMONIALS</a>
-            </div>
-            <a href="https://discord.com/users/1252496089177784361" target="_blank" class="px-8 py-3.5 bg-gradient-to-r from-cyan-400 to-orange-400 hover:from-cyan-500 hover:to-orange-500 text-black font-semibold rounded-3xl text-sm flex items-center gap-2 shadow-[0_0_30px_#00f3ff]">
-                <i class="fa-solid fa-paper-plane"></i> HIRE ME
-            </a>
-            <button id="mobile-menu-btn" class="md:hidden text-2xl"><i class="fa-solid fa-bars"></i></button>
+  <!-- ===================== NAV ===================== -->
+  <nav class="nav" id="nav">
+    <div class="nav-inner">
+      <a href="#home" class="nav-logo">
+        <img src="images/favicon.png" alt="Ghost" class="nav-logo-mark">
+        <span>Ghost</span>
+      </a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="#about">About</a></li>
+        <li><a href="#services">Services</a></li>
+        <li><a href="#work">Work</a></li>
+        <li><a href="#skills">Skills</a></li>
+        <li><a href="#testimonials">Reviews</a></li>
+      </ul>
+      <a href="https://discord.com/users/1252496089177784361" target="_blank" rel="noopener" class="nav-cta">Hire me</a>
+      <button class="nav-burger" id="navBurger" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+    <div class="nav-mobile" id="navMobile">
+      <a href="#about">About</a>
+      <a href="#services">Services</a>
+      <a href="#work">Work</a>
+      <a href="#skills">Skills</a>
+      <a href="#testimonials">Reviews</a>
+      <a href="https://discord.com/users/1252496089177784361" target="_blank" rel="noopener" class="nav-mobile-cta">Hire me on Discord</a>
+    </div>
+  </nav>
+
+  <!-- ===================== HERO ===================== -->
+  <section class="hero" id="home">
+    <!-- Animated gradient background -->
+<div class="hero-gradient-bg" aria-hidden="true">
+  <span class="glow-orb glow-orb-1"></span>
+  <span class="glow-orb glow-orb-2"></span>
+  <span class="glow-orb glow-orb-3"></span>
+</div>
+    <!-- Drifting smoke clouds at the top -->
+<div class="hero-smoke" aria-hidden="true">
+  <span class="smoke-puff smoke-puff-1"></span>
+  <span class="smoke-puff smoke-puff-2"></span>
+  <span class="smoke-puff smoke-puff-3"></span>
+</div>
+<div class="hero-lightning-flash" aria-hidden="true"></div>
+    <div class="hero-inner">
+      <div class="hero-copy">
+        <p class="hero-kicker reveal">Web3 Collab manager · Designer · Developer</p>
+        <h1 class="hero-title">
+          <span class="hero-title-line">1x Ghost</span>
+          <span class="hero-title-line hero-title-accent">Your Web Dev</span>
+        </h1>
+        <p class="hero-sub reveal" style="animation-delay:.3s">5+ years running community, design and code for NFT projects and DAOs, from first Discord message to shipped website.</p>
+        <div class="hero-actions reveal" style="animation-delay:.42s">
+          <a href="https://discord.com/users/1252496089177784361" target="_blank" rel="noopener" class="btn btn-primary">Start a project</a>
+          <a href="#work" class="btn btn-ghost">See the work</a>
         </div>
-        <div id="mobile-menu" class="hidden md:hidden glass border-t border-white/10 px-6 py-8">
-            <div class="flex flex-col gap-6 text-lg">
-                <a href="#home" onclick="toggleMobileMenu()" class="nav-link">HOME</a>
-                <a href="#about" onclick="toggleMobileMenu()" class="nav-link">ABOUT</a>
-                <a href="#services" onclick="toggleMobileMenu()" class="nav-link">SERVICES</a>
-                <a href="#portfolio" onclick="toggleMobileMenu()" class="nav-link">PORTFOLIO</a>
-                <a href="#skills" onclick="toggleMobileMenu()" class="nav-link">SKILLS</a>
-                <a href="#testimonials" onclick="toggleMobileMenu()" class="nav-link">TESTIMONIALS</a>
-                <a href="https://discord.com/users/1252496089177784361" target="_blank" class="mt-4 inline-block text-center bg-white text-black py-4 rounded-3xl font-semibold">HIRE ME ON DISCORD</a>
-            </div>
+      </div>
+      <div class="hero-visual">
+        <div class="hero-visual-glow"></div>
+        <div class="hero-ring hero-ring-2"></div>
+        <div class="hero-ring hero-ring-1"></div>
+       <!-- Realistic lightning strikes -->
+<div class="lightning-ring" aria-hidden="true">
+
+  <svg class="lightning lightning-1" viewBox="0 0 100 250" xmlns="http://www.w3.org/2000/svg">
+    <defs><path id="boltA" d="M54 0 L36 54 L50 50 L26 116 L44 112 L22 186 L40 182 L30 250 M36 54 L14 96 M44 112 L72 158"/></defs>
+    <g class="bolt-body">
+      <use href="#boltA" class="bolt-glow"/>
+      <use href="#boltA" class="bolt-mid"/>
+      <use href="#boltA" class="bolt-core"/>
+    </g>
+  </svg>
+
+  <svg class="lightning lightning-2" viewBox="0 0 100 250" xmlns="http://www.w3.org/2000/svg">
+    <defs><path id="boltB" d="M46 0 L58 46 L38 42 L56 104 L34 100 L52 170 L36 166 L48 250 M58 46 L80 88 M52 170 L28 214"/></defs>
+    <g class="bolt-body">
+      <use href="#boltB" class="bolt-glow"/>
+      <use href="#boltB" class="bolt-mid"/>
+      <use href="#boltB" class="bolt-core"/>
+    </g>
+  </svg>
+
+  <svg class="lightning lightning-3" viewBox="0 0 100 250" xmlns="http://www.w3.org/2000/svg">
+    <defs><path id="boltC" d="M58 0 L40 66 L56 62 L34 142 L50 138 L28 218 L42 214 L36 250 M56 62 L82 104"/></defs>
+    <g class="bolt-body">
+      <use href="#boltC" class="bolt-glow"/>
+      <use href="#boltC" class="bolt-mid"/>
+      <use href="#boltC" class="bolt-core"/>
+    </g>
+  </svg>
+
+  <svg class="lightning lightning-4" viewBox="0 0 100 250" xmlns="http://www.w3.org/2000/svg">
+    <defs><path id="boltD" d="M50 0 L42 38 L60 34 L38 96 L56 92 L30 168 L46 164 L24 250 M60 34 L84 72 M46 164 L20 200"/></defs>
+    <g class="bolt-body">
+      <use href="#boltD" class="bolt-glow"/>
+      <use href="#boltD" class="bolt-mid"/>
+      <use href="#boltD" class="bolt-core"/>
+    </g>
+  </svg>
+
+  <svg class="lightning lightning-5" viewBox="0 0 100 250" xmlns="http://www.w3.org/2000/svg">
+    <defs><path id="boltE" d="M44 0 L60 52 L40 48 L54 118 L34 114 L50 184 L36 180 L46 250 M54 118 L76 160"/></defs>
+    <g class="bolt-body">
+      <use href="#boltE" class="bolt-glow"/>
+      <use href="#boltE" class="bolt-mid"/>
+      <use href="#boltE" class="bolt-core"/>
+    </g>
+  </svg>
+
+</div>
+          <div class="hero-skull-frame">
+     <img src="images/hero-nft.png" alt="Ghost mascot" class="hero-skull" id="heroSkull">
+   </div>
         </div>
-    </nav>
+      </div>
+    </div>
+    <div class="hero-scroll-cue">
+      <span></span>
+    </div>
+  </section>
 
-    <!-- HERO -->
-    <section id="home" class="min-h-[100dvh] flex items-center relative">
-        <div class="max-w-screen-2xl mx-auto px-6 grid md:grid-cols-12 gap-12 items-center pt-20">
-            <div class="md:col-span-7 space-y-10">
-                <div class="inline-flex items-center gap-3 px-6 py-2 glass rounded-3xl text-cyan-400 text-sm font-medium">
-                    <div class="w-2 h-2 bg-cyan-400 rounded-full animate-pulse"></div>
-                    MODERATOR • WEB3 ECOSYSTEM
-                </div>
-                <h1 class="title-font text-7xl md:text-8xl font-semibold tracking-tighter leading-none neon-cyan">! GHOST</h1>
-                <div class="text-3xl md:text-5xl font-medium text-white/80 flex items-center gap-3 min-h-[1.2em]">
-                    <span id="typewriter" class="text-cyan-400"></span>
-                    <span class="animate-pulse text-cyan-400">_</span>
-                </div>
-                <p class="max-w-lg text-lg text-white/70">5+ years shaping the Web3 universe.<br>Collab manager • Graphic designer • Website developer • Community moderator.</p>
-                <div class="flex flex-wrap gap-5">
-                    <a href="https://discord.com/users/1252496089177784361" target="_blank" class="px-10 py-5 bg-white text-black font-semibold rounded-3xl flex items-center gap-3 text-lg hover:scale-105 shadow-xl"><i class="fa-brands fa-discord"></i> HIRE ME</a>
-                    <button onclick="smoothScrollTo('portfolio')" class="px-10 py-5 border-2 border-white/70 hover:border-cyan-400 rounded-3xl text-lg font-medium flex items-center gap-3">VIEW MY WORK <i class="fa-solid fa-arrow-down"></i></button>
-                </div>
-            </div>
-            <div class="md:col-span-5 relative flex justify-center">
-                <div class="relative">
-                    <div class="absolute -inset-20 bg-gradient-to-br from-cyan-400/10 to-orange-400/10 rounded-[100px] blur-3xl"></div>
-                    <img src="./images/hero-nft.png" alt="Ghost NFT Avatar" class="hero-float w-full max-w-md md:max-w-lg rounded-3xl shadow-2xl border border-white/10 object-cover">
-                    <div class="absolute -top-6 -left-8 glass px-6 py-3 rounded-3xl text-sm flex items-center gap-2 shadow-xl"><i class="fa-solid fa-fire text-orange-400"></i><span>5+ YEARS</span></div>
-                    <div class="absolute -bottom-6 right-8 glass px-6 py-3 rounded-3xl text-sm flex items-center gap-2 shadow-xl"><span class="text-cyan-400">WEB3</span><i class="fa-solid fa-cube"></i></div>
-                </div>
-            </div>
+  <!-- ===================== ABOUT ===================== -->
+  <section class="about" id="about">
+    <div class="section-inner about-grid">
+      <div class="about-heading reveal-up">
+        <h2>Who's Ghost</h2>
+      </div>
+      <div class="about-body">
+        <p class="reveal-up">I'm a Web3 collab manager, graphic designer and website developer, five years deep in NFT launches, DAOs and community builds. I've helped projects find partners, build an identity, and ship a site that actually converts.</p>
+        <p class="reveal-up" style="transition-delay:.08s">Right now I split my time between design work, freelance builds like this one, and moderating communities that need someone who treats the job like it matters.</p>
+                <div class="about-stats reveal-up" style="transition-delay:.16s">
+          <div class="stat">
+            <span class="stat-figure"><span class="stat-num" data-count="50">0</span><span class="stat-plus">+</span></span>
+            <span class="stat-label">Projects delivered</span>
+          </div>
+          <div class="stat">
+            <span class="stat-figure"><span class="stat-num" data-count="12">0</span><span class="stat-plus">k+</span></span>
+            <span class="stat-label">Community members managed</span>
+          </div>
+          <div class="stat">
+            <span class="stat-figure"><span class="stat-num" data-count="5">0</span><span class="stat-plus">+</span></span>
+            <span class="stat-label">Years in Web3</span>
+          </div>
         </div>
-    </section>
+      </div>
+    </div>
+  </section>
 
-    <!-- ABOUT -->
-    <section id="about" class="py-32 bg-black/30">
-        <div class="max-w-screen-2xl mx-auto px-6">
-            <div class="grid md:grid-cols-12 gap-16 items-center">
-                <div class="md:col-span-5">
-                    <div class="sticky top-28">
-                        <span class="px-5 py-2 bg-white/5 text-cyan-400 text-xs tracking-[2px] font-medium rounded-full">CHAPTER 01</span>
-                        <h2 class="title-font text-6xl font-semibold mt-6 leading-none">I am ! Ghost</h2>
-                        <div class="h-1 w-16 bg-gradient-to-r from-cyan-400 to-orange-400 mt-6"></div>
-                    </div>
-                </div>
-                <div class="md:col-span-7 text-lg text-white/80 leading-relaxed max-w-2xl">
-                    <p class="mb-8">A passionate Web3 Collab Manager, Graphic Designer, Website Developer, and Community Moderator with over 5 years of hands-on experience in the blockchain space.</p>
-                    <p>I’ve helped NFT projects, DAOs, and Web3 startups launch successful communities, build stunning digital identities, and create immersive websites that don’t just look good — they convert.</p>
-                    <div class="mt-12 flex gap-8 flex-wrap">
-                        <div><div class="text-4xl font-semibold text-cyan-400">50+</div><div class="text-sm text-white/50">Projects Delivered</div></div>
-                        <div><div class="text-4xl font-semibold text-cyan-400">12k+</div><div class="text-sm text-white/50">Community Members Managed</div></div>
-                        <div><div class="text-4xl font-semibold text-cyan-400">∞</div><div class="text-sm text-white/50">Creativity</div></div>
-                    </div>
-                </div>
-            </div>
+  <!-- ===================== SERVICES ===================== -->
+  <section class="services" id="services">
+    <div class="section-inner">
+      <h2 class="section-title reveal-up">What I do</h2>
+      <div class="services-grid">
+        <div class="service-card reveal-up">
+          <div class="service-num">01</div>
+          <h3>Collab management</h3>
+          <p>Partnerships, cross-project collabs and launch coordination that actually land.</p>
         </div>
-    </section>
-
-    <!-- SERVICES -->
-    <section id="services" class="py-32">
-        <div class="max-w-screen-2xl mx-auto px-6">
-            <div class="text-center mb-16">
-                <span class="text-orange-400 text-sm tracking-widest">CHAPTER 02 • WHAT I OFFER</span>
-                <h2 class="title-font text-6xl font-semibold mt-3">Services</h2>
-            </div>
-            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <div class="glass p-8 rounded-3xl group hover:-translate-y-3"><div class="text-5xl mb-6">🤝</div><h3 class="text-2xl font-semibold mb-3">Web3 Collab Manager</h3><p class="text-white/70">Strategic partnership building, cross-project collaborations, and launch coordination across the ecosystem.</p></div>
-                <div class="glass p-8 rounded-3xl group hover:-translate-y-3"><div class="text-5xl mb-6">🎨</div><h3 class="text-2xl font-semibold mb-3">Graphic Design</h3><p class="text-white/70">Banners, NFT art, social visuals, branding kits — all with that signature cyber-neon aesthetic.</p></div>
-                <div class="glass p-8 rounded-3xl group hover:-translate-y-3"><div class="text-5xl mb-6">💻</div><h3 class="text-2xl font-semibold mb-3">Website Development</h3><p class="text-white/70">High-performance, fully responsive Web3 websites with glassmorphism, animations &amp; Web3 integrations.</p></div>
-                <div class="glass p-8 rounded-3xl group hover:-translate-y-3"><div class="text-5xl mb-6">🛡️</div><h3 class="text-2xl font-semibold mb-3">Community Moderation</h3><p class="text-white/70">Discord &amp; Telegram moderation that keeps communities healthy, engaged and drama-free.</p></div>
-            </div>
+        <div class="service-card reveal-up" style="transition-delay:.08s">
+          <div class="service-num">02</div>
+          <h3>Graphic design</h3>
+          <p>Banners, NFT art and branding kits with a look that doesn't blend into the timeline.</p>
         </div>
-    </section>
-
-    <!-- PORTFOLIO -->
-    <section id="portfolio" class="py-32 bg-black/40">
-        <div class="max-w-screen-2xl mx-auto px-6">
-            <div class="flex justify-between items-end mb-16">
-                <div><span class="text-orange-400 text-sm tracking-widest">CHAPTER 03</span><h2 class="title-font text-6xl font-semibold">Featured Work</h2></div>
-                <a href="#" onclick="smoothScrollTo('testimonials')" class="hidden md:flex items-center gap-3 text-sm text-cyan-400 hover:text-white">SEE WHAT CLIENTS SAY <span class="text-2xl">→</span></a>
-            </div>
-            <div class="mb-16">
-                <h3 class="uppercase text-xs tracking-[2px] text-cyan-400 mb-6 flex items-center gap-3"><span class="flex-1 h-px bg-white/10"></span>WEBSITES<span class="flex-1 h-px bg-white/10"></span></h3>
-                <div class="grid md:grid-cols-3 gap-8">
-                    <a href="https://solana-druglords.github.io/solana-druglords" target="_blank" class="portfolio-card group glass rounded-3xl overflow-hidden"><img src="./images/project1.png" alt="Solana Druglords" class="w-full h-64 object-cover group-hover:scale-105"><div class="p-8"><div class="text-orange-400 text-xs mb-1">SOLANA • NFT</div><div class="text-2xl font-semibold">Solana Druglords</div><div class="text-white/60 text-sm mt-2 flex items-center gap-2">Live project <span class="text-xs">↗</span></div></div></a>
-                    <a href="https://wegodsnft.github.io/we-gods" target="_blank" class="portfolio-card group glass rounded-3xl overflow-hidden"><img src="./images/project2.png" alt="We Gods NFT" class="w-full h-64 object-cover group-hover:scale-105"><div class="p-8"><div class="text-orange-400 text-xs mb-1">NFT COLLECTION</div><div class="text-2xl font-semibold">We Gods</div><div class="text-white/60 text-sm mt-2 flex items-center gap-2">Live project <span class="text-xs">↗</span></div></div></a>
-                    <a href="https://lunar-howl.vercel.app" target="_blank" class="portfolio-card group glass rounded-3xl overflow-hidden"><img src="./images/project3.png" alt="Lunar Howl" class="w-full h-64 object-cover group-hover:scale-105"><div class="p-8"><div class="text-orange-400 text-xs mb-1">METAVERSE • NFT</div><div class="text-2xl font-semibold">Lunar Howl</div><div class="text-white/60 text-sm mt-2 flex items-center gap-2">Live project <span class="text-xs">↗</span></div></div></a>
-                </div>
-            </div>
-            <div>
-                <h3 class="uppercase text-xs tracking-[2px] text-cyan-400 mb-6 flex items-center gap-3"><span class="flex-1 h-px bg-white/10"></span>GRAPHIC DESIGNS<span class="flex-1 h-px bg-white/10"></span></h3>
-                <div class="grid md:grid-cols-3 gap-8">
-                    <div class="glass rounded-3xl overflow-hidden"><img src="./images/design1.png" alt="Design 1" class="w-full h-80 object-cover"><div class="p-6 text-center text-sm text-white/60">Twitter Banner &amp; Promo</div></div>
-                    <div class="glass rounded-3xl overflow-hidden"><img src="./images/design2.png" alt="Design 2" class="w-full h-80 object-cover"><div class="p-6 text-center text-sm text-white/60">NFT Collection Art</div></div>
-                    <div class="glass rounded-3xl overflow-hidden"><img src="./images/design3.png" alt="Design 3" class="w-full h-80 object-cover"><div class="p-6 text-center text-sm text-white/60">Community Collab Visual</div></div>
-                </div>
-            </div>
+        <div class="service-card reveal-up" style="transition-delay:.16s">
+          <div class="service-num">03</div>
+          <h3>Website development</h3>
+          <p>Fast, responsive Web3 sites built to load quick and hold up on every device.</p>
         </div>
-    </section>
-
-    <!-- SKILLS - NOW PERFECTLY RESPONSIVE ON 350dp PHONES -->
-    <section id="skills" class="py-32 bg-black/30">
-        <div class="max-w-screen-2xl mx-auto px-6">
-            <div class="grid md:grid-cols-12 gap-16">
-                <!-- Left column - smaller text on mobile -->
-                <div class="md:col-span-5">
-                    <span class="text-orange-400 uppercase tracking-widest text-xs md:text-sm">CHAPTER 04</span>
-                    <h2 class="title-font text-5xl md:text-6xl font-semibold mt-4">Superpowers</h2>
-                </div>
-                <!-- Right column - compact skill bars on mobile -->
-                <div class="md:col-span-7 space-y-10">
-                    <div class="skill-bar">
-                        <div class="flex justify-between mb-3 text-sm">
-                            <span class="font-medium">Website Development</span>
-                            <span class="text-cyan-400 font-mono">95%</span>
-                        </div>
-                        <div class="h-2 bg-white/10 rounded-full overflow-hidden">
-                            <div data-width="95" class="skill-progress h-full bg-gradient-to-r from-cyan-400 to-cyan-300 w-0"></div>
-                        </div>
-                    </div>
-                    <div class="skill-bar">
-                        <div class="flex justify-between mb-3 text-sm">
-                            <span class="font-medium">Web3 Collab Management</span>
-                            <span class="text-cyan-400 font-mono">92%</span>
-                        </div>
-                        <div class="h-2 bg-white/10 rounded-full overflow-hidden">
-                            <div data-width="92" class="skill-progress h-full bg-gradient-to-r from-cyan-400 to-cyan-300 w-0"></div>
-                        </div>
-                    </div>
-                    <div class="skill-bar">
-                        <div class="flex justify-between mb-3 text-sm">
-                            <span class="font-medium">Graphic Design</span>
-                            <span class="text-cyan-400 font-mono">88%</span>
-                        </div>
-                        <div class="h-2 bg-white/10 rounded-full overflow-hidden">
-                            <div data-width="88" class="skill-progress h-full bg-gradient-to-r from-cyan-400 to-cyan-300 w-0"></div>
-                        </div>
-                    </div>
-                    <div class="skill-bar">
-                        <div class="flex justify-between mb-3 text-sm">
-                            <span class="font-medium">Community Moderation</span>
-                            <span class="text-cyan-400 font-mono">90%</span>
-                        </div>
-                        <div class="h-2 bg-white/10 rounded-full overflow-hidden">
-                            <div data-width="90" class="skill-progress h-full bg-gradient-to-r from-cyan-400 to-cyan-300 w-0"></div>
-                        </div>
-                    </div>
-                    <div class="skill-bar">
-                        <div class="flex justify-between mb-3 text-sm">
-                            <span class="font-medium">UI/UX for Web3</span>
-                            <span class="text-cyan-400 font-mono">85%</span>
-                        </div>
-                        <div class="h-2 bg-white/10 rounded-full overflow-hidden">
-                            <div data-width="85" class="skill-progress h-full bg-gradient-to-r from-cyan-400 to-cyan-300 w-0"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <div class="service-card reveal-up" style="transition-delay:.24s">
+          <div class="service-num">04</div>
+          <h3>Community moderation</h3>
+          <p>Discord and Telegram moderation that keeps things active without the drama.</p>
         </div>
-    </section>
+      </div>
+    </div>
+  </section>
 
-    <!-- TESTIMONIALS -->
-    <section id="testimonials" class="py-32">
-        <div class="max-w-screen-2xl mx-auto px-6">
-            <div class="text-center mb-16">
-                <span class="px-8 py-2.5 glass rounded-3xl text-sm">CHAPTER 05 • TESTIMONIALS</span>
-                <h2 class="title-font text-6xl font-semibold mt-6">What the Ecosystem says</h2>
-            </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <div class="testimonial-card glass p-8 rounded-3xl"><img src="./images/testimonial1.png" alt="" class="w-14 h-14 rounded-2xl mb-6"><p class="italic text-lg leading-relaxed">"Ghost's Moderation was top-tier. He helped us Managed our community by hosting games and keeping it active, also, built a stunning website that drove massive engagement!"</p><div class="mt-10 flex justify-between items-end"><div><div class="font-semibold">Drug Baron</div><div class="text-xs text-orange-400">NFT Project Founder @ SolanaDruglords</div></div></div></div>
-                <div class="testimonial-card glass p-8 rounded-3xl"><img src="./images/testimonial2.png" alt="" class="w-14 h-14 rounded-2xl mb-6"><p class="italic text-lg leading-relaxed">"Amazing Collaboration/Partnership Design with 2 Communities... Bro's got cool Design skills"</p><div class="mt-10 flex justify-between items-end"><div><div class="font-semibold">Jordan Lee</div><div class="text-xs text-orange-400">Partnership Design</div></div></div></div>
-                <div class="testimonial-card glass p-8 rounded-3xl"><img src="./images/testimonial3.png" alt="" class="w-14 h-14 rounded-2xl mb-6"><p class="italic text-lg leading-relaxed">"Ghost created incredible graphic designs for our branding. His attention to detail is unmatched."</p><div class="mt-10 flex justify-between items-end"><div><div class="font-semibold">MoonFang</div><div class="text-xs text-orange-400">Graphic Design Client  [Founder] @Lunar Howl</div></div></div></div>
-                <div class="testimonial-card glass p-8 rounded-3xl"><img src="./images/testimonial4.png" alt="" class="w-14 h-14 rounded-2xl mb-6"><p class="italic text-lg leading-relaxed">"Best Moderator we've had. Kept our Discord community active, positive, and growing every single day."</p><div class="mt-10 flex justify-between items-end"><div><div class="font-semibold">Varok Sol</div><div class="text-xs text-orange-400">Community Moderator Feedback  Current CM @Lunar Howl</div></div></div></div>
-                <div class="testimonial-card glass p-8 rounded-3xl"><img src="./images/testimonial5.png" alt="" class="w-14 h-14 rounded-2xl mb-6"><p class="italic text-lg leading-relaxed">"Perfect Twitter banner and visuals. Bro Recreated both my old and new Twitter Banner and Profile... Top-Notch."</p><div class="mt-10 flex justify-between items-end"><div><div class="font-semibold">Ucan Web3</div><div class="text-xs text-orange-400">X Banner Client</div></div></div></div>
-                <div class="testimonial-card glass p-8 rounded-3xl"><img src="./images/testimonial6.png" alt="" class="w-14 h-14 rounded-2xl mb-6"><p class="italic text-lg leading-relaxed">"Professional and a Top Notch Graphic designer.. Gave me a cool Banner for my X."</p><div class="mt-10 flex justify-between items-end"><div><div class="font-semibold">Marvy Sol</div><div class="text-xs text-orange-400">X Banner Client - Pro CM</div></div></div></div>
-                <div class="testimonial-card glass p-8 rounded-3xl"><img src="./images/testimonial88.png" alt="" class="w-14 h-14 rounded-2xl mb-6"><p class="italic text-lg leading-relaxed">"The website and Moderation services were exceptional. Highly recommend Ghost for any Web or Graphic Design Services."</p><div class="mt-10 flex justify-between items-end"><div><div class="font-semibold">Odin Father</div><div class="text-xs text-orange-400">NFT Project Founder</div></div></div></div>
-                <div class="testimonial-card glass p-8 rounded-3xl"><img src="./images/testimonial8.png" alt="" class="w-14 h-14 rounded-2xl mb-6"><p class="italic text-lg leading-relaxed">"Setup Our Discord Channels and bots... Nice Setup Fam Thanks"</p><div class="mt-10 flex justify-between items-end"><div><div class="font-semibold">Drew Bailey</div><div class="text-xs text-orange-400">Discord Server Setup</div></div></div></div>
-                <div class="testimonial-card glass p-8 rounded-3xl"><img src="./images/testimonial9.png" alt="" class="w-14 h-14 rounded-2xl mb-6"><p class="italic text-lg leading-relaxed">"One of our Best Telegram Mod Always Active, GGs Fam"</p><div class="mt-10 flex justify-between items-end"><div><div class="font-semibold">Henry Jamie</div><div class="text-xs text-orange-400">Moderator Feedback</div></div></div></div>
-                <div class="testimonial-card glass p-8 rounded-3xl"><img src="./images/testimonial10.png" alt="" class="w-14 h-14 rounded-2xl mb-6"><p class="italic text-lg leading-relaxed">"Outstanding collab manager. Made every partnership seamless and fun."</p><div class="mt-10 flex justify-between items-end"><div><div class="font-semibold">Parker Reed</div><div class="text-xs text-orange-400">Collaboration Partner</div></div></div></div>
-                <div class="testimonial-card glass p-8 rounded-3xl"><img src="./images/testimonial11.png" alt="" class="w-14 h-14 rounded-2xl mb-6"><p class="italic text-lg leading-relaxed">"Ghost moderated our community like a pro zero drama, maximum vibes and growth."</p><div class="mt-10 flex justify-between items-end"><div><div class="font-semibold">King Ape</div><div class="text-xs text-orange-400">Moderator Feedback</div></div></div></div>
-            </div>
+  <!-- ===================== WORK ===================== -->
+  <section class="work" id="work">
+    <div class="section-inner">
+      <h2 class="section-title reveal-up">Featured websites</h2>
+      <div class="work-grid">
+
+        <a href="https://marvysol.vercel.app" target="_blank" rel="noopener" class="work-card reveal-up">
+          <div class="work-card-img"><img src="images/project-marvy.png" alt="Marvy.Sol"></div>
+          <div class="work-card-body">
+            <span class="work-card-tag">Web3 portfolio</span>
+            <h3>Marvy.Sol</h3>
+          </div>
+        </a>
+
+        <a href="https://dumbted.vercel.app" target="_blank" rel="noopener" class="work-card reveal-up" style="transition-delay:.06s">
+          <div class="work-card-img"><img src="images/project-dumbted.png" alt="DUMBTED"></div>
+          <div class="work-card-body">
+            <span class="work-card-tag">NFT collection</span>
+            <h3>DUMBTED</h3>
+          </div>
+        </a>
+
+        <a href="https://solana-druglords.github.io/solana-druglords" target="_blank" rel="noopener" class="work-card reveal-up" style="transition-delay:.12s">
+          <div class="work-card-img"><img src="images/project1.png" alt="Solana Druglords"></div>
+          <div class="work-card-body">
+            <span class="work-card-tag">Solana · NFT</span>
+            <h3>Solana Druglords</h3>
+          </div>
+        </a>
+
+        <a href="https://wegodsnft.github.io/we-gods" target="_blank" rel="noopener" class="work-card reveal-up" style="transition-delay:.18s">
+          <div class="work-card-img"><img src="images/project2.png" alt="We Gods"></div>
+          <div class="work-card-body">
+            <span class="work-card-tag">NFT collection</span>
+            <h3>We Gods</h3>
+          </div>
+        </a>
+
+      </div>
+
+      <h3 class="work-subtitle reveal-up">Past projects</h3>
+      <div class="work-grid work-grid-past">
+        <a href="https://lunar-howl.vercel.app" target="_blank" rel="noopener" class="work-card work-card-past reveal-up">
+          <div class="work-card-img"><img src="images/project3.png" alt="Lunar Howl"></div>
+          <div class="work-card-body">
+            <span class="work-card-tag">Metaverse · NFT · Completed</span>
+            <h3>Lunar Howl</h3>
+          </div>
+        </a>
+      </div>
+
+      <h3 class="work-subtitle reveal-up">Graphic design</h3>
+      <div class="design-grid">
+        <div class="design-card reveal-up"><img src="images/design1.png" alt="Design work"></div>
+        <div class="design-card reveal-up" style="transition-delay:.08s"><img src="images/design2.png" alt="Design work"></div>
+        <div class="design-card reveal-up" style="transition-delay:.16s"><img src="images/design3.png" alt="Design work"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== SKILLS ===================== -->
+  <section class="skills" id="skills">
+    <div class="section-inner skills-grid">
+      <h2 class="section-title reveal-up">Superpowers</h2>
+      <div class="skills-bars">
+        <div class="skill-bar reveal-up">
+          <div class="skill-bar-label"><span>Website Development</span><span class="skill-pct">98%</span></div>
+          <div class="skill-track"><div class="skill-fill" data-width="98"></div></div>
         </div>
-    </section>
-
-    <!-- FOOTER - COMPACT ON MOBILE (no extra space) -->
-    <footer class="glass py-12 md:py-20 border-t border-white/10">
-        <div class="max-w-screen-2xl mx-auto px-6">
-            <div class="flex flex-col md:flex-row justify-between items-center gap-12">
-                <div class="flex items-center gap-4">
-                    <div class="w-11 h-11 rounded-2xl bg-gradient-to-br from-cyan-400 to-orange-400 flex items-center justify-center text-3xl font-bold">!</div>
-                    <div><span class="title-font text-4xl font-semibold">Ghost</span></div>
-                </div>
-                <div class="flex gap-8 text-3xl">
-                    <a href="https://discord.com/users/1252496089177784361" target="_blank" class="hover:text-cyan-400"><i class="fa-brands fa-discord"></i></a>
-                    <a href="https://x.com/ghost_sol00" target="_blank" class="hover:text-cyan-400"><i class="fa-brands fa-x-twitter"></i></a>
-                    <a href="https://t.me/ghost_sol1" target="_blank" class="hover:text-cyan-400"><i class="fa-brands fa-telegram"></i></a>
-                    <a href="mailto:ghostsolx1@gmail.com" class="hover:text-cyan-400"><i class="fa-solid fa-envelope"></i></a>
-                </div>
-                <div class="text-xs text-white/40 text-center md:text-right">© 2026 ! Ghost</div>
-            </div>
+        <div class="skill-bar reveal-up" style="transition-delay:.06s">
+          <div class="skill-bar-label"><span>Web3 Collab Management</span><span class="skill-pct">90%</span></div>
+          <div class="skill-track"><div class="skill-fill" data-width="90"></div></div>
         </div>
-    </footer>
+        <div class="skill-bar reveal-up" style="transition-delay:.12s">
+          <div class="skill-bar-label"><span>Graphic Design</span><span class="skill-pct">92%</span></div>
+          <div class="skill-track"><div class="skill-fill" data-width="92"></div></div>
+        </div>
+        <div class="skill-bar reveal-up" style="transition-delay:.18s">
+          <div class="skill-bar-label"><span>Community Moderation</span><span class="skill-pct">96%</span></div>
+          <div class="skill-track"><div class="skill-fill" data-width="96"></div></div>
+        </div>
+        <div class="skill-bar reveal-up" style="transition-delay:.24s">
+          <div class="skill-bar-label"><span>UI/UX for Web3</span><span class="skill-pct">80%</span></div>
+          <div class="skill-track"><div class="skill-fill" data-width="80"></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-    <script>
-        function initTailwind() { document.documentElement.style.setProperty('--tw-ring-color', '#00f3ff'); }
+  <!-- ===================== TESTIMONIALS ===================== -->
+  <section class="testimonials" id="testimonials">
+    <div class="section-inner">
+      <h2 class="section-title reveal-up">What clients say</h2>
+      <div class="testimonials-grid">
 
-        function smoothScrollTo(sectionId) {
-            const element = document.getElementById(sectionId);
-            if (element) element.scrollIntoView({ behavior: "smooth", block: "start" });
-            if (window.innerWidth < 768) toggleMobileMenu();
-        }
+        <div class="testimonial-card reveal-up">
+          <img src="images/testimonial12.png" alt="" class="testimonial-avatar">
+          <p>"Ghost built our whole site from scratch and it fits DUMBTED perfectly that punk/street energy came through exactly how we wanted. Fast turnaround, listened to every note, and the guy just gets Web3 aesthetics."</p>
+          <div class="testimonial-name">ChiefDumbOfficer</div>
+          <div class="testimonial-role">Founder @ DUMBTED</div>
+        </div>
 
-        function toggleMobileMenu() {
-            document.getElementById('mobile-menu').classList.toggle('hidden');
-        }
+        <div class="testimonial-card reveal-up" style="transition-delay:.06s">
+          <img src="images/testimonial6.png" alt="" class="testimonial-avatar">
+          <p>"Professional and a top-notch graphic designer. Gave me a cool banner for my X."</p>
+          <div class="testimonial-name">Marvy Sol</div>
+          <div class="testimonial-role">X Banner Client · Pro CM</div>
+        </div>
 
-        function initBackground() {
-            const canvas = document.getElementById('bg-canvas');
-            const ctx = canvas.getContext('2d');
-            let particles = [];
-            let mouse = { x: 0, y: 0 };
-            let isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+        <div class="testimonial-card reveal-up" style="transition-delay:.12s">
+          <img src="images/testimonial1.png" alt="" class="testimonial-avatar">
+          <p>"Ghost's moderation was top-tier. He helped us manage our community, host games and keep it active, plus built a stunning website that drove real engagement."</p>
+          <div class="testimonial-name">Drug Baron</div>
+          <div class="testimonial-role">NFT Project Founder @ SolanaDruglords</div>
+        </div>
 
-            function resizeCanvas() {
-                const dpr = window.devicePixelRatio || 1;
-                const w = window.innerWidth;
-                const h = window.innerHeight;
-                canvas.width = w * dpr;
-                canvas.height = h * dpr;
-                canvas.style.width = w + 'px';
-                canvas.style.height = h + 'px';
-                ctx.scale(dpr, dpr);
-            }
+        <div class="testimonial-card reveal-up" style="transition-delay:.18s">
+          <img src="images/testimonial3.png" alt="" class="testimonial-avatar">
+          <p>"Ghost created incredible graphic designs for our branding. His attention to detail is unmatched."</p>
+          <div class="testimonial-name">MoonFang</div>
+          <div class="testimonial-role">Founder @ Lunar Howl</div>
+        </div>
 
-            class Particle {
-                constructor() { this.reset(); }
-                reset() {
-                    this.x = Math.random() * canvas.width;
-                    this.y = Math.random() * canvas.height;
-                    this.size = Math.random() * 2.8 + 0.6;
-                    this.speedX = (Math.random() - 0.5) * 0.6;
-                    this.speedY = (Math.random() - 0.5) * 0.6;
-                    this.opacity = Math.random() * 0.7 + 0.3;
-                    this.hue = Math.random() > 0.7 ? 200 : 280;
-                }
-                update() {
-                    this.x += this.speedX; this.y += this.speedY;
-                    if (!isMobile) {
-                        const dx = this.x - mouse.x, dy = this.y - mouse.y;
-                        const distance = Math.sqrt(dx*dx + dy*dy);
-                        if (distance < 220 && distance > 0) {
-                            const force = (220 - distance) / 220;
-                            this.speedX += (dx / distance) * force * 0.8;
-                            this.speedY += (dy / distance) * force * 0.8;
-                        }
-                    }
-                    if (this.x < 0 || this.x > canvas.width) this.speedX *= -1;
-                    if (this.y < 0 || this.y > canvas.height) this.speedY *= -1;
-                    if (Math.random() < 0.008) this.opacity = Math.random() * 0.6 + 0.4;
-                }
-                draw() {
-                    ctx.save();
-                    ctx.globalAlpha = this.opacity;
-                    ctx.fillStyle = `hsl(${this.hue}, 100%, 75%)`;
-                    ctx.shadowBlur = 15;
-                    ctx.shadowColor = `hsl(${this.hue}, 100%, 75%)`;
-                    ctx.beginPath();
-                    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                    ctx.fill();
-                    ctx.restore();
-                }
-            }
+        <div class="testimonial-card reveal-up" style="transition-delay:.24s">
+          <img src="images/testimonial4.png" alt="" class="testimonial-avatar">
+          <p>"Best moderator we've had. Kept our Discord community active, positive, and growing every single day."</p>
+          <div class="testimonial-name">Varok Sol</div>
+          <div class="testimonial-role">Community Moderator @ Lunar Howl</div>
+        </div>
 
-            function createParticles(count) {
-                particles = [];
-                for (let i = 0; i < count; i++) particles.push(new Particle());
-            }
+        <div class="testimonial-card reveal-up" style="transition-delay:.3s">
+          <img src="images/testimonial10.png" alt="" class="testimonial-avatar">
+          <p>"Outstanding collab manager. Made every partnership seamless and fun."</p>
+          <div class="testimonial-name">Parker Reed</div>
+          <div class="testimonial-role">Collaboration Partner</div>
+        </div>
 
-            function connectParticles() {
-                for (let i = 0; i < particles.length; i++) {
-                    for (let j = i + 1; j < particles.length; j++) {
-                        const dx = particles[i].x - particles[j].x;
-                        const dy = particles[i].y - particles[j].y;
-                        const distance = Math.sqrt(dx * dx + dy * dy);
-                        if (distance < 135) {
-                            ctx.strokeStyle = `rgba(0, 243, 255, ${1 - distance / 135})`;
-                            ctx.lineWidth = 0.65;
-                            ctx.beginPath();
-                            ctx.moveTo(particles[i].x, particles[i].y);
-                            ctx.lineTo(particles[j].x, particles[j].y);
-                            ctx.stroke();
-                        }
-                    }
-                }
-            }
+      </div>
+      <div class="testimonials-cta reveal-up">
+        <a href="testimonials.html" class="link-arrow">See all reviews</a>
+      </div>
+    </div>
+  </section>
 
-            function animate() {
-                ctx.fillStyle = 'rgba(5, 7, 15, 0.12)';
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-                particles.forEach(p => { p.update(); p.draw(); });
-                connectParticles();
-                requestAnimationFrame(animate);
-            }
+  <!-- ===================== FOOTER ===================== -->
+  <footer class="footer">
+    <div class="section-inner footer-inner">
+      <div class="footer-logo">
+        <img src="images/favicon.png" alt="Ghost">
+        <span>Ghost</span>
+      </div>
+      <div class="footer-links">
+  <a class="social-icon discord" href="https://discord.com/users/1252496089177784361" target="_blank" rel="noopener" aria-label="Discord">
+    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.4189-2.1568 2.4189Z"/></svg>
+  </a>
+  <a class="social-icon twitter" href="https://x.com/ghost_sol00" target="_blank" rel="noopener" aria-label="X">
+    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/></svg>
+  </a>
+  <a class="social-icon telegram" href="https://t.me/ghost_sol1" target="_blank" rel="noopener" aria-label="Telegram">
+    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+  </a>
+  <a class="social-icon email" href="mailto:ghostsolx1@gmail.com" aria-label="Email">
+    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+  </a>
+</div>
+  </footer>
 
-            window.addEventListener('resize', () => { resizeCanvas(); createParticles(window.innerWidth < 768 ? 85 : 165); });
-            window.addEventListener('orientationchange', () => {
-                setTimeout(() => { resizeCanvas(); createParticles(window.innerWidth < 768 ? 85 : 165); }, 200);
-            });
-            window.addEventListener('mousemove', e => { mouse.x = e.clientX; mouse.y = e.clientY; });
-
-            resizeCanvas();
-            createParticles(window.innerWidth < 768 ? 85 : 165);
-            animate();
-
-            setTimeout(() => { resizeCanvas(); createParticles(window.innerWidth < 768 ? 85 : 165); }, 100);
-            setTimeout(() => { resizeCanvas(); createParticles(window.innerWidth < 768 ? 85 : 165); }, 500);
-            setTimeout(() => { resizeCanvas(); createParticles(window.innerWidth < 768 ? 85 : 165); }, 1200);
-        }
-
-        function typewriterEffect() {
-            const roles = ["Web3 Collab Manager","Graphic Designer","Website Developer","Community Moderator"];
-            let index = 0, charIndex = 0, isDeleting = false;
-            const el = document.getElementById('typewriter');
-            function type() {
-                const role = roles[index];
-                if (!isDeleting) {
-                    el.textContent = role.substring(0, charIndex + 1);
-                    charIndex++;
-                    if (charIndex === role.length) { isDeleting = true; setTimeout(type, 1800); return; }
-                } else {
-                    el.textContent = role.substring(0, charIndex - 1);
-                    charIndex--;
-                    if (charIndex === 0) { isDeleting = false; index = (index + 1) % roles.length; }
-                }
-                setTimeout(type, isDeleting ? 35 : 65);
-            }
-            type();
-        }
-
-        function handlePreloader() {
-            const preloader = document.getElementById('preloader');
-            let dots = document.getElementById('loading-dots');
-            let count = 0;
-            const interval = setInterval(() => {
-                count = (count + 1) % 4;
-                dots.textContent = "Initializing Portfolio" + ".".repeat(count);
-            }, 380);
-            setTimeout(() => {
-                clearInterval(interval);
-                preloader.style.transition = 'opacity 1.2s cubic-bezier(0.23, 1, 0.32, 1)';
-                preloader.style.opacity = '0';
-                setTimeout(() => preloader.style.display = 'none', 1400);
-            }, 3200);
-        }
-
-        function initScrollProgress() {
-            const bar = document.getElementById('scroll-progress');
-            window.addEventListener('scroll', () => {
-                const scrollTop = window.scrollY;
-                const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-                bar.style.width = docHeight > 0 ? (scrollTop / docHeight * 100) + '%' : '0';
-            });
-        }
-
-        function animateSkills() {
-            const bars = document.querySelectorAll('.skill-progress');
-            const obs = new IntersectionObserver(entries => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.style.width = entry.target.getAttribute('data-width') + '%';
-                    }
-                });
-            }, { threshold: 0.6 });
-            bars.forEach(bar => obs.observe(bar));
-        }
-
-        function addCardTilt() {
-            document.querySelectorAll('.portfolio-card').forEach(card => {
-                card.addEventListener('mousemove', e => {
-                    const rect = card.getBoundingClientRect();
-                    const x = e.clientX - rect.left, y = e.clientY - rect.top;
-                    const rx = (y - rect.height / 2) / 12;
-                    const ry = (rect.width / 2 - x) / 12;
-                    card.style.transform = `perspective(1000px) rotateX(${-rx}deg) rotateY(${ry}deg) scale(1.03)`;
-                });
-                card.addEventListener('mouseleave', () => card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale(1)');
-            });
-        }
-
-        function addKeyboardShortcuts() {
-            document.addEventListener('keydown', e => {
-                if (e.key === "Escape") {
-                    const pre = document.getElementById('preloader');
-                    if (pre.style.display !== 'none') {
-                        pre.style.opacity = '0';
-                        setTimeout(() => pre.style.display = 'none', 800);
-                    }
-                }
-            });
-        }
-
-        function initializeWebsite() {
-            initTailwind();
-            initBackground();
-            typewriterEffect();
-            handlePreloader();
-            initScrollProgress();
-            animateSkills();
-            addCardTilt();
-            addKeyboardShortcuts();
-            document.getElementById('mobile-menu-btn').addEventListener('click', toggleMobileMenu);
-
-            window.addEventListener('scroll', () => {
-                const sections = ['home','about','services','portfolio','skills','testimonials'];
-                let current = '';
-                sections.forEach(id => {
-                    const sec = document.getElementById(id);
-                    if (scrollY >= sec.offsetTop - 200) current = id;
-                });
-                document.querySelectorAll('.nav-link').forEach(link => {
-                    link.classList.remove('text-cyan-400', 'font-semibold');
-                    if (link.getAttribute('href') === `#${current}`) link.classList.add('text-cyan-400', 'font-semibold');
-                });
-            });
-
-            console.log('%c! Ghost Portfolio loaded successfully ✨', 'color:#00f3ff; font-family:monospace');
-        }
-
-        window.onload = initializeWebsite;
-    </script>
+  <script src="js/main.js"></script>
 </body>
 </html>
