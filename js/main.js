@@ -10,14 +10,14 @@ function handlePreloader() {
     setTimeout(() => {
       preloader.classList.add('hidden');
       setTimeout(() => { preloader.style.display = 'none'; }, 700);
-    }, 2500);
+    }, 1200);
   });
   // fallback in case 'load' already fired before this script ran
   if (document.readyState === 'complete') {
     setTimeout(() => {
       preloader.classList.add('hidden');
       setTimeout(() => { preloader.style.display = 'none'; }, 700);
-    }, 2500);
+    }, 1200);
   }
 }
 
