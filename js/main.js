@@ -9,15 +9,15 @@ function handlePreloader() {
   window.addEventListener('load', () => {
     setTimeout(() => {
       preloader.classList.add('hidden');
-      setTimeout(() => { preloader.style.display = 'none'; }, 700);
-    }, 800);
+      setTimeout(() => { preloader.style.display = 'none'; }, 7000);
+    }, 500);
   });
   // fallback in case 'load' already fired before this script ran
   if (document.readyState === 'complete') {
     setTimeout(() => {
       preloader.classList.add('hidden');
-      setTimeout(() => { preloader.style.display = 'none'; }, 700);
-    }, 800);
+      setTimeout(() => { preloader.style.display = 'none'; }, 7000);
+    }, 500);
   }
 }
 
